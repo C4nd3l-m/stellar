@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Navigation from '../../components/layout/Navigation.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Timeline from '../../components/islands/Timeline.jsx';
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+
+const memories = await getCollection('memories');
+const memoriesWithHtml = await Promise.all(
+  memories.map(async (mem) => {
+    const html = await marked.parse(mem.body || '');
+    return {
+      slug: mem.id,
+      data: mem.data,
+      html,
+    };
+  })
+);
+---
+
+<Base title="Recuerdos" description="Los capítulos de nuestra historia.">
+  <Navigation />
+  <main style="padding-top: 5rem;">
+    <Timeline memories={memoriesWithHtml} client:load />
+  </main>
+  <Footer />
+</Base>

@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Navigation from '../../components/layout/Navigation.astro';
+import Footer from '../../components/layout/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const memories = await getCollection('memories');
+  return memories.map((mem) => ({ params: { slug: mem.id } }));
+}
+
+const { slug } = Astro.params;
+const memories = await getCollection('memories');
+const memory = memories.find(m => m.id === slug);
+if (!memory) return Astro.redirect('/recuerdos');
+
+const { Content } = await render(memory);
+---
+
+<Base title={memory.data.title} description={memory.data.hiddenNote || 'Un recuerdo nuestro.'}>
+  <Navigation />
+  <main class="memory-page">
+    <article class="memory-article">
+      {memory.data.cover && (
+        <div class="memory-hero-img">
+          {memory.data.cover.endsWith('.mp4') ? (
+            <video src={memory.data.cover} autoplay muted loop playsinline class="hero-video" />
+          ) : (
+            <img src={memory.data.cover} alt={memory.data.title} />
+          )}
+        </div>
+      )}
+      <div class="memory-body">
+        <a href="/recuerdos" class="back-link">← Todos los recuerdos</a>
+        {memory.data.date && <p class="memory-date">{memory.data.date}</p>}
+        <h1 class="memory-title">
+          <span class="memory-emoji">{memory.data.emoji}</span>
+          {memory.data.title}
+        </h1>
+        {memory.data.location && <p class="memory-location">📍 {memory.data.location}</p>}
+        <div class="memory-content prose-cosmos">
+          <Content />
+        </div>
+        {memory.data.hiddenNote && (
+          <div class="memory-note">
+            <span class="note-label">✦ Nota personal</span>
+            <p>{memory.data.hiddenNote}</p>
+          </div>
+        )}
+        {memory.data.tags && memory.data.tags.length > 0 && (
+          <div class="memory-tags">
+            {memory.data.tags.map((tag: string) => (
+              <span class="tag">#{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .memory-page { padding-top: 5rem; min-height: 100vh; }
+  .memory-article { max-width: 720px; margin: 0 auto; }
+  .memory-hero-img { overflow: hidden; height: 420px; }
+  .memory-hero-img img, .hero-video { width: 100%; height: 100%; object-fit: cover; }
+  .memory-body { padding: 3rem 2rem; }
+  .back-link { color: var(--color-muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.05em; transition: color 0.2s; }
+  .back-link:hover { color: var(--color-rose-warm); }
+  .memory-date { font-size: 0.8rem; letter-spacing: 0.15em; color: var(--color-rose-warm); text-transform: uppercase; margin-top: 1.5rem; }
+  .memory-title { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--color-cream); margin: 0.5rem 0 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
+  .memory-emoji { font-style: normal; }
+  .memory-location { color: var(--color-muted); font-size: 0.875rem; margin-bottom: 2rem; }
+  .memory-content { border-top: 1px solid rgba(184,159,212,0.1); padding-top: 1.75rem; }
+  .memory-note { margin-top: 2.5rem; padding: 1.25rem 1.5rem; background: rgba(232,133,106,0.06); border-left: 2px solid rgba(232,133,106,0.3); border-radius: 0 10px 10px 0; }
+  .note-label { font-size: 0.72rem; color: var(--color-rose-warm); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.4rem; }
+  .memory-note p { font-size: 0.9rem; color: var(--color-cream-dim); font-style: italic; }
+  .memory-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 2rem; }
+  .tag { font-size: 0.72rem; color: var(--color-muted); background: rgba(184,159,212,0.08); border: 1px solid rgba(184,159,212,0.12); border-radius: 20px; padding: 0.2rem 0.7rem; }
+</style>

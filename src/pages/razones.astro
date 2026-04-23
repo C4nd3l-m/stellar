@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/layout/Navigation.astro';
+import Footer from '../components/layout/Footer.astro';
+import LoveReasons from '../components/islands/LoveReasons.jsx';
+import reasons from '../content/reasons.json';
+---
+
+<Base title="Cosas que amo de vos" description="Hay mil razones, acá te dejo algunas.">
+  <Navigation />
+  <main style="padding-top: 5rem;">
+    <LoveReasons reasons={reasons} client:load />
+  </main>
+  <Footer />
+</Base>

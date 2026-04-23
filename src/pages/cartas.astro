@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/layout/Navigation.astro';
+import Footer from '../components/layout/Footer.astro';
+import SecretVault from '../components/islands/SecretVault.jsx';
+import { getCollection, render } from 'astro:content';
+
+const letters = await getCollection('letters');
+const lettersWithHtml = await Promise.all(
+  letters.map(async (letter) => {
+    const { Content } = await render(letter);
+    return {
+      slug: letter.id,
+      data: letter.data,
+      html: '', // For React we might need raw HTML if we use dangerouslySetInnerHTML
+    };
+  })
+);
+
+// We need to pass the compiled HTML to the React component.
+// Astro 5 `render` doesn't directly return an HTML string we can pass to React easily without a wrapper.
+// So we will just map over them and use a markdown parser or just pass the body text.
+// Actually, Astro's `letter.body` contains the raw markdown. 
+// For a simple approach, we can pass `letter.body` and render it in React, or just compile it here.
+import { marked } from 'marked';
+
+const processedLetters = letters.map(letter => ({
+  ...letter,
+  html: marked.parse(letter.body || '')
+}));
+---
+
+<Base title="Cartas Secretas" description="Cartas para abrir en el momento indicado.">
+  <Navigation />
+  <main style="padding-top: 5rem;">
+    <SecretVault letters={processedLetters} client:load />
+  </main>
+  <Footer />
+</Base>

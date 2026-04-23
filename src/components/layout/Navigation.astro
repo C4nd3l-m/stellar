@@ -1,0 +1,88 @@
+---
+const navItems = [
+  { href: '/recuerdos', label: 'Recuerdos' },
+  { href: '/cartas', label: 'Cartas' },
+  { href: '/razones', label: 'Razones' },
+  { href: '/suenos', label: 'Sueños' },
+  { href: '/soundtrack', label: 'Soundtrack' },
+];
+
+const current = Astro.url.pathname;
+---
+
+<nav class="nav-container">
+  <a href="/" class="nav-brand">
+    <span class="font-script text-lg" style="color: var(--color-rose-warm)">Versiones de Nosotros</span>
+  </a>
+  <div class="nav-links">
+    {navItems.map(item => (
+      <a 
+        href={item.href} 
+        class={`nav-link ${current.startsWith(item.href) ? 'nav-link-active' : ''}`}
+      >
+        {item.label}
+      </a>
+    ))}
+  </div>
+  <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<style>
+  .nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(8, 6, 15, 0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(184, 159, 212, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .nav-brand { text-decoration: none; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link-active {
+    color: var(--color-rose-warm) !important;
+  }
+
+  .nav-link-active::after {
+    width: 100% !important;
+  }
+
+  .nav-mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .nav-mobile-toggle span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--color-cream);
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-mobile-toggle { display: flex; }
+    .nav-container { padding: 1rem 1.25rem; }
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/layout/Navigation.astro';
+import Footer from '../components/layout/Footer.astro';
+import Soundtrack from '../components/islands/Soundtrack.jsx';
+---
+
+<Base title="Nuestro Soundtrack" description="La música de nuestra historia.">
+  <Navigation />
+  <main style="padding-top: 5rem;">
+    <Soundtrack client:load />
+  </main>
+  <Footer />
+</Base>

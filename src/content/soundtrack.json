@@ -1,0 +1,28 @@
+[
+  {
+    "title": "I Love You For Infinity",
+    "artist": "James Young",
+    "reason": "La canción principal de nuestra historia.",
+    "special": true
+  },
+  {
+    "title": "Are You Mine?",
+    "artist": "Arctic Monkeys",
+    "reason": "Sonaba en esos momentos que no olvidamos."
+  },
+  {
+    "title": "Just Pretend",
+    "artist": "Bad Omens",
+    "reason": "Los momentos intensos que compartimos."
+  },
+  {
+    "title": "Balada para un loco",
+    "artist": "Piazzolla & Ferrer",
+    "reason": "Un tango que siente como nosotros: pasión y movimiento."
+  },
+  {
+    "title": "Clair de Lune",
+    "artist": "Claude Debussy",
+    "reason": "Para las noches tranquilas juntos."
+  }
+]
