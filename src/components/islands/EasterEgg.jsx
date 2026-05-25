@@ -7,8 +7,8 @@ const SECRETS = [
     hint: 'Encontraste la primera estrella ✦',
     title: 'Video sorpresa',
     icon: '🎬',
-    content: 'Aquí va el video montaje de fotos. Cuando lo tengas listo, reemplazá este texto con un <video> o un embed de YouTube.',
     type: 'video',
+    videoSrc: '/images/Gio.mp4',
   },
   {
     id: 2,
@@ -27,6 +27,50 @@ const SECRETS = [
     type: 'future',
   },
 ];
+
+function SecretModal({ active, onClose }) {
+  return (
+    <motion.div
+      className="modal-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.88, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+        className={`secret-modal ${active.type === 'video' ? 'secret-modal-video' : ''}`}
+        onClick={e => e.stopPropagation()}
+      >
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <div className="secret-modal-icon">{active.icon}</div>
+        <p className="secret-modal-hint">{active.hint}</p>
+        <h3 className="secret-modal-title">{active.title}</h3>
+        <div className="divider" style={{ margin: '1.25rem auto' }} />
+
+        {active.type === 'video' ? (
+          <div className="video-wrapper">
+            <video
+              src={active.videoSrc}
+              controls
+              playsInline
+              className="secret-video"
+              poster=""
+            >
+              Tu navegador no soporta este video.
+            </video>
+            <p className="video-caption">🎬 Hecho con todo el amor del mundo ✨</p>
+          </div>
+        ) : (
+          <p className="secret-modal-content">{active.content}</p>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function EasterEgg() {
   const [unlocked, setUnlocked] = useState([]);
@@ -103,25 +147,7 @@ export default function EasterEgg() {
 
       {/* Modal */}
       <AnimatePresence>
-        {active && (
-          <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.88, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-              className="secret-modal"
-              onClick={e => e.stopPropagation()}
-            >
-              <button className="modal-close" onClick={() => setActive(null)}>✕</button>
-              <div className="secret-modal-icon">{active.icon}</div>
-              <p className="secret-modal-hint">{active.hint}</p>
-              <h3 className="secret-modal-title">{active.title}</h3>
-              <div className="divider" style={{ margin: '1.25rem auto' }} />
-              <p className="secret-modal-content">{active.content}</p>
-            </motion.div>
-          </motion.div>
-        )}
+        {active && <SecretModal active={active} onClose={() => setActive(null)} />}
       </AnimatePresence>
 
       <style>{`
@@ -147,12 +173,23 @@ export default function EasterEgg() {
         .unlocked-title { flex: 1; font-size: 0.9rem; color: var(--color-cream); font-family: var(--font-display); }
         .unlocked-arrow { color: var(--color-rose-warm); font-size: 0.9rem; }
 
-        .secret-modal { background: rgba(17,13,30,0.97); border: 1px solid rgba(212,167,106,0.2); border-radius: 20px; max-width: 520px; width: 100%; padding: 3rem 2.5rem; position: relative; text-align: center; max-height: 85vh; overflow-y: auto; }
-        .modal-close { position: absolute; top: 1.25rem; right: 1.25rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-muted); font-size: 0.8rem; }
+        .secret-modal { background: rgba(17,13,30,0.97); border: 1px solid rgba(212,167,106,0.2); border-radius: 20px; max-width: 520px; width: 100%; padding: 3rem 2.5rem; position: relative; text-align: center; max-height: 90vh; overflow-y: auto; }
+        .secret-modal-video { max-width: 720px; }
+        .modal-close { position: absolute; top: 1.25rem; right: 1.25rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-muted); font-size: 0.8rem; transition: all 0.2s; }
+        .modal-close:hover { background: rgba(255,255,255,0.14); color: var(--color-cream); }
         .secret-modal-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
         .secret-modal-hint { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--color-gold-soft); text-transform: uppercase; margin-bottom: 0.75rem; }
         .secret-modal-title { font-family: var(--font-display); font-size: 1.4rem; color: var(--color-cream); margin-bottom: 0.5rem; }
         .secret-modal-content { font-size: 1rem; color: var(--color-cream-dim); line-height: 1.8; white-space: pre-line; text-align: left; margin-top: 0.5rem; }
+
+        .video-wrapper { margin-top: 0.5rem; border-radius: 12px; overflow: hidden; background: #000; }
+        .secret-video { width: 100%; max-height: 60vh; display: block; border-radius: 12px; }
+        .video-caption { font-size: 0.8rem; color: var(--color-muted); margin-top: 0.85rem; letter-spacing: 0.05em; }
+
+        @media (max-width: 600px) {
+          .secret-modal { padding: 2rem 1.25rem; }
+          .secret-modal-video { max-width: 100%; }
+        }
       `}</style>
     </section>
   );

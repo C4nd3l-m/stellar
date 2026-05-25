@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/layout/Navigation.astro';
+import Footer from '../components/layout/Footer.astro';
+import PhotoGallery from '../components/islands/PhotoGallery.jsx';
+---
+
+<Base title="Galería" description="Todos nuestros momentos en un solo lugar.">
+  <Navigation />
+  <main style="padding-top: 5rem;">
+    <PhotoGallery client:load />
+  </main>
+  <Footer />
+</Base>
